@@ -12,12 +12,13 @@
 
 /* Define a register map that will be exposed to I2C host at secondary address (for Bridge Control Panel) */
 typedef struct {
-	uint16  CycleCount; /* holds arbitrary I2C Master-read cycle count */
-	uint16  Cmod; /* BIST Cmod measurement */
-	uint16  sensorCp[CY_CAPSENSE_SENSOR_COUNT]; /* BIST Cp measurements */
-    uint16  sensor_raw_count[CY_CAPSENSE_SENSOR_COUNT];
-    uint16  bsln[CY_CAPSENSE_SENSOR_COUNT];
-    uint16  diff[CY_CAPSENSE_SENSOR_COUNT];
+	uint16_t  CycleCount; /* holds arbitrary I2C Master-read cycle count */
+	uint16_t  numWidgets;
+	uint16_t  Cmod; /* BIST Cmod measurement */
+	uint16_t  sensorCp[CY_CAPSENSE_SENSOR_COUNT]; /* BIST Cp measurements */
+    uint16_t  sensor_raw_count[CY_CAPSENSE_SENSOR_COUNT];
+    uint16_t  bsln[CY_CAPSENSE_SENSOR_COUNT];
+    uint16_t  diff[CY_CAPSENSE_SENSOR_COUNT];
 } bcp_stc_RegisterMap_t;
 
 void initialize_BCP(void);

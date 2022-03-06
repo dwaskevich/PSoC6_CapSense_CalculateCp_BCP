@@ -154,6 +154,8 @@ int main(void)
     	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = (uint16_t) measureCapacitance;
     }
 
+    RegisterMap.numWidgets = (uint16_t) CY_CAPSENSE_NUM_WD_VALUE;
+
     /* Initiate first scan */
     Cy_CapSense_ScanAllWidgets(&cy_capsense_context);
 
