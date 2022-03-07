@@ -46,12 +46,14 @@
 /*******************************************************************************
  * Include header files
  ******************************************************************************/
+#include <sensorCp.h>
 #include "cybsp.h"
 #include "cyhal.h"
 #include "cycfg.h"
 #include "cycfg_capsense.h"
 #include "led.h"
 #include "bridgeControlPanel_PSoC6.h"
+#include "sensorCp.h"
 
 /*******************************************************************************
 * Macros
@@ -121,6 +123,10 @@ int main(void)
     cy_rslt_t result;
     uint32_t measureCapacitance;
 
+    uint32_t loopCounter;
+    const cy_stc_capsense_widget_config_t * ptrWdConfig; /* pointer to widget configuration parameters in Flash */
+
+
     /* Initialize the device and board peripherals */
     result = cybsp_init();
 
@@ -148,13 +154,19 @@ int main(void)
     Cy_CapSense_MeasureCapacitanceCap(CY_CAPSENSE_BIST_CMOD_ID_E, &measureCapacitance, 3, &cy_capsense_context);
     RegisterMap.Cmod = (uint16_t) measureCapacitance;
 
-    for(uint8_t i = 0; i < 5; i++)
-    {
-    	Cy_CapSense_MeasureCapacitanceSensor(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i, &measureCapacitance, &cy_capsense_context);
-    	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = (uint16_t) measureCapacitance;
-    }
+//    for(uint8_t i = 0; i < 5; i++)
+//    {
+////    	Cy_CapSense_MeasureCapacitanceSensor(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i, &measureCapacitance, &cy_capsense_context);
+////    	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = (uint16_t) measureCapacitance;
+//
+//    	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = measureSensorCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i);
+//
+//    }
 
     RegisterMap.numWidgets = (uint16_t) CY_CAPSENSE_NUM_WD_VALUE;
+
+    ptrWdConfig = cy_capsense_context.ptrWdConfig; /* set widget pointer to beginning of widget array (widget 0) */
+    ptrWdConfig += CY_CAPSENSE_LINEARSLIDER0_WDGT_ID; /* move to slider widget */
 
     /* Initiate first scan */
     Cy_CapSense_ScanAllWidgets(&cy_capsense_context);
@@ -165,6 +177,26 @@ int main(void)
         {
             /* Process all widgets */
             Cy_CapSense_ProcessAllWidgets(&cy_capsense_context);
+
+            /* calculate sensor Cp from scan data */
+        	for(uint8_t snsNum = 0; snsNum < ptrWdConfig->numSns; snsNum++)
+        	{
+        		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = calculateCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, snsNum);
+//        		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = snsNum;
+
+        	}
+
+
+//            for(uint8_t widgetID = 0; widgetID < CY_CAPSENSE_WIDGET_COUNT; widgetID++)
+//            {
+//            	for(uint8_t snsNum = 0; snsNum < ptrWdConfig->numSns; snsNum++)
+//            	{
+//            		calculateCp(widgetID, snsNum);
+//
+//            	}
+//
+//            	ptrWdConfig++;
+//            }
 
             /* Process touch input */
             process_touch();
