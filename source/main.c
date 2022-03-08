@@ -178,7 +178,7 @@ int main(void)
         		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = (uint16_t) calculateCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, snsNum);
         	}
 
-//        	/* calculate sensor Cp from scan data */
+//        	/* calculate sensor Cp from scan data  - TODO not complete, needs to only check for CSD widgets */
 //        	loopCounter = 0;
 //            for(uint8_t widgetID = 0; widgetID < CY_CAPSENSE_WIDGET_COUNT; widgetID++)
 //            {

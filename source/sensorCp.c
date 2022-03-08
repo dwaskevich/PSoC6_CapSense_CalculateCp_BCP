@@ -7,10 +7,14 @@
  *  Description:
  *  	- measureSensorCp uses BIST library APIs to measure sensor Cp
  *  	- calculateSensorCp uses scan parameters to calculate sensor Cp
+ *  	- define Vref in sensorCp.h
  *
  *  Usage:
  *  	- Include header in main.c (#include "sensorCp.h")
- *  	-
+ *  	- calculateCp returns a uint32_t value ... recast to uint16_t if needed
+ *  	- calculateAllSensorCp - not implemented yet
+ *
+ * measureSensorCp: uses BIST library APIs to measure sensor Cp
  *
  * calculateCp: Calculates parasitic capacitance (Cp) for dual-iDAC
  *              CSD sensors using scan parameters and values retrieved
@@ -39,7 +43,7 @@ uint16_t measureSensorCp(uint8_t widgetID, uint8_t snsNum)
 	return (uint16_t) sensorCp;
 }
 
-void measureAllSensorCp(void)
+void calculateAllSensorCp(void)
 {
 	uint32_t sensorCp, loopCounter = 0;
 
