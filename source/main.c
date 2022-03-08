@@ -154,16 +154,10 @@ int main(void)
     Cy_CapSense_MeasureCapacitanceCap(CY_CAPSENSE_BIST_CMOD_ID_E, &measureCapacitance, 3, &cy_capsense_context);
     RegisterMap.Cmod = (uint16_t) measureCapacitance;
 
-//    for(uint8_t i = 0; i < 5; i++)
-//    {
-////    	Cy_CapSense_MeasureCapacitanceSensor(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i, &measureCapacitance, &cy_capsense_context);
-////    	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = (uint16_t) measureCapacitance;
-//
-//    	RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = measureSensorCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i);
-//
-//    }
-
-    RegisterMap.numWidgets = (uint16_t) CY_CAPSENSE_NUM_WD_VALUE;
+    for(uint8_t i = 0; i < 5; i++)
+    {
+    	RegisterMap.sensorCpBIST[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + i] = measureSensorCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, i);
+    }
 
     ptrWdConfig = cy_capsense_context.ptrWdConfig; /* set widget pointer to beginning of widget array (widget 0) */
     ptrWdConfig += CY_CAPSENSE_LINEARSLIDER0_WDGT_ID; /* move to slider widget */
@@ -181,20 +175,19 @@ int main(void)
             /* calculate sensor Cp from scan data */
         	for(uint8_t snsNum = 0; snsNum < ptrWdConfig->numSns; snsNum++)
         	{
-        		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = calculateCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, snsNum);
-//        		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = snsNum;
-
+        		RegisterMap.sensorCp[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID + snsNum] = (uint16_t) calculateCp(CY_CAPSENSE_LINEARSLIDER0_WDGT_ID, snsNum);
         	}
 
-
+//        	/* calculate sensor Cp from scan data */
+//        	loopCounter = 0;
 //            for(uint8_t widgetID = 0; widgetID < CY_CAPSENSE_WIDGET_COUNT; widgetID++)
 //            {
 //            	for(uint8_t snsNum = 0; snsNum < ptrWdConfig->numSns; snsNum++)
 //            	{
 //            		calculateCp(widgetID, snsNum);
-//
+//					RegisterMap.sensorCp[loopCounter] = calculateCp(widgetID, snsNum);
+//					loopCounter++;
 //            	}
-//
 //            	ptrWdConfig++;
 //            }
 
@@ -279,9 +272,6 @@ static void process_touch(void)
     {
         led_data.brightness = (slider_pos * 100)
                 / cy_capsense_context.ptrWdConfig[CY_CAPSENSE_LINEARSLIDER0_WDGT_ID].xResolution;
-
-        RegisterMap.sensor_raw_count[0] = slider_pos;
-
         led_update_req = true;
     }
 
